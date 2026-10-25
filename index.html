@@ -1,5 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>মেশিন লার্নিং কনসোল</title>
+<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><title>মেশিন লার্নিং কনসোল</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2036%2036%22%3E%3Crect%20width%3D%2236%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22%231f3a6e%22/%3E%3Cline%20x1%3D%2218%22%20y1%3D%229%22%20x2%3D%2218%22%20y2%3D%225%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22/%3E%3Ccircle%20cx%3D%2218%22%20cy%3D%224%22%20r%3D%222.2%22%20fill%3D%22%234fd1c5%22/%3E%3Crect%20x%3D%226%22%20y%3D%2210%22%20width%3D%2224%22%20height%3D%2218%22%20rx%3D%225%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22/%3E%3Crect%20x%3D%2210.5%22%20y%3D%2215%22%20width%3D%225.5%22%20height%3D%225.5%22%20rx%3D%221.4%22%20fill%3D%22%239db8f5%22/%3E%3Crect%20x%3D%2220%22%20y%3D%2215%22%20width%3D%225.5%22%20height%3D%225.5%22%20rx%3D%221.4%22%20fill%3D%22%234fd1c5%22/%3E%3Cline%20x1%3D%2212%22%20y1%3D%2225%22%20x2%3D%2224%22%20y2%3D%2225%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -225,6 +224,7 @@
   .chh .cc { font: 600 12px var(--f-mono); color: var(--muted); }
   .chh::after { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform 0.15s; flex: none; margin: 0 2px; }
   .chg.open > .chh { border-color: var(--c); }
+  .chg.cur > .chh { border-color: var(--c); background: linear-gradient(90deg, var(--ct), transparent 80%), var(--stripe); }
   .chg.open > .chh::after { transform: rotate(45deg); }
   .chl { list-style: none; margin: 6px 0 10px; padding: 0 0 0 8px; display: flex; flex-direction: column; gap: 6px; border-left: 2px solid var(--cl, var(--line)); }
   .chl[hidden] { display: none; }
@@ -620,7 +620,7 @@
   try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
   var stage = $('stage'), chips = $('chips'), finder = $('q');
-  var idx = 0, mode = 'read', filter = '', openCh = 1;
+  var idx = 0, mode = 'read', filter = '', openCh = 0;
 
   /* storage helpers, always safe */
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -674,7 +674,7 @@
     order.forEach(function (ch) {
       var lastSub = '';
       var open = q ? true : ch === openCh;
-      html += '<li class="chg' + (open ? ' open' : '') + '"><button type="button" class="chh" data-ch="' + ch + '" aria-expanded="' + (open ? 'true' : 'false') + '">' +
+      html += '<li class="chg' + (open ? ' open' : '') + (ch === TERMS[idx].ch ? ' cur' : '') + '"><button type="button" class="chh" data-ch="' + ch + '" aria-expanded="' + (open ? 'true' : 'false') + '">' +
         '<span class="cn">Part ' + ch + ' · ' + CHN[ch] + '</span></button>' +
         '<ol class="chl"' + (open ? '' : ' hidden') + '>' +
         groups[ch].map(function (i) {
@@ -743,7 +743,7 @@
   function go(i, user) {
     idx = Math.max(0, Math.min(N - 1, i));
     mode = 'read';
-    openCh = TERMS[idx].ch;
+    openCh = 0;
     syncMode();
     renderChips();
     renderUnit();
